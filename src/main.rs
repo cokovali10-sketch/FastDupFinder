@@ -138,8 +138,7 @@ fn find_duplicates(
         }
     }
 
-    let hash_map: HashBySize =
-        Arc::new(Mutex::new(HashMap::new()));
+    let hash_map: HashBySize = Arc::new(Mutex::new(HashMap::new()));
     let counter = Arc::new(Mutex::new(0u64));
     let total_files: usize = size_groups
         .values()
