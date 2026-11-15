@@ -66,7 +66,10 @@ mod tests {
         let dir = setup_test_dir();
         let hash_a = hash_file(&dir.path().join("a.txt")).unwrap();
         let hash_c = hash_file(&dir.path().join("c.txt")).unwrap();
-        assert_ne!(hash_a, hash_c, "different files should have different hashes");
+        assert_ne!(
+            hash_a, hash_c,
+            "different files should have different hashes"
+        );
     }
 
     #[test]

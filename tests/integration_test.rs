@@ -36,7 +36,10 @@ fn test_hash_file_different_contents() {
     let dir = setup_test_dir();
     let hash1 = fastdupfinder::hash_file(&dir.path().join("photo1.jpg")).unwrap();
     let hash3 = fastdupfinder::hash_file(&dir.path().join("photo2.jpg")).unwrap();
-    assert_ne!(hash1, hash3, "different content must produce different hashes");
+    assert_ne!(
+        hash1, hash3,
+        "different content must produce different hashes"
+    );
 }
 
 #[test]
@@ -96,7 +99,11 @@ fn test_duplicate_detection_via_collect_and_hash() {
     }
 
     let duplicate_groups: Vec<_> = groups.into_iter().filter(|(_, v)| v.len() >= 2).collect();
-    assert_eq!(duplicate_groups.len(), 2, "should find exactly 2 duplicate groups");
+    assert_eq!(
+        duplicate_groups.len(),
+        2,
+        "should find exactly 2 duplicate groups"
+    );
 }
 
 #[test]

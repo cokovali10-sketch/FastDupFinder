@@ -138,10 +138,15 @@ fn find_duplicates(
     let hash_map: Arc<Mutex<HashMap<String, (u64, Vec<PathBuf>)>>> =
         Arc::new(Mutex::new(HashMap::new()));
     let counter = Arc::new(Mutex::new(0u64));
-    let total_files: usize = size_groups.values().filter(|v| v.len() >= 2).map(|v| v.len()).sum();
+    let total_files: usize = size_groups
+        .values()
+        .filter(|v| v.len() >= 2)
+        .map(|v| v.len())
+        .sum();
 
     size_groups
-        .par_values()
+        .par_iter()
+        .map(|(_, paths)| paths)
         .filter(|paths| paths.len() >= 2)
         .for_each(|paths| {
             let mut local_hashes: Vec<(String, PathBuf)> = Vec::new();
@@ -173,9 +178,9 @@ fn find_duplicates(
     let results: Vec<(String, u64, Vec<PathBuf>)> = hash_map
         .lock()
         .unwrap()
-        .into_iter()
+        .iter()
         .filter(|(_, (_, paths))| paths.len() >= 2)
-        .map(|(hash, (size, paths))| (hash, size, paths))
+        .map(|(hash, (size, paths))| (hash.clone(), *size, paths.clone()))
         .collect();
 
     results
