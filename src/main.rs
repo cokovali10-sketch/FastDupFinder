@@ -12,6 +12,9 @@ use walkdir::WalkDir;
 
 use fastdupfinder::{format_size, hash_file};
 
+/// Hash → (file size, paths) for every file that shares its size with another.
+type HashBySize = Arc<Mutex<HashMap<String, (u64, Vec<PathBuf>)>>>;
+
 #[derive(Parser)]
 #[command(
     name = "fastdupfinder",
@@ -135,7 +138,7 @@ fn find_duplicates(
         }
     }
 
-    let hash_map: Arc<Mutex<HashMap<String, (u64, Vec<PathBuf>)>>> =
+    let hash_map: HashBySize =
         Arc::new(Mutex::new(HashMap::new()));
     let counter = Arc::new(Mutex::new(0u64));
     let total_files: usize = size_groups
@@ -169,7 +172,7 @@ fn find_duplicates(
             *count += 1;
             if let Some(ref pb) = pb {
                 pb.inc(1);
-                if *count % 50 == 0 || *count as usize == total_files {
+                if count.is_multiple_of(50) || *count as usize == total_files {
                     pb.set_message(format!("hashed {}/{} files", count, total_files));
                 }
             }
